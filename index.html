@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Союз за кадром | Студия звукозаписи</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #0f172a;
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #22d3ee;
+            border-radius: 4px;
+        }
+
+        /* Neon Glow Effects */
+        .neon-text-cyan {
+            text-shadow: 0 0 10px rgba(34, 211, 238, 0.5), 0 0 20px rgba(34, 211, 238, 0.3), 0 0 30px rgba(34, 211, 238, 0.2);
+            animation: neonPulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes neonPulse {
+            0%, 100% { text-shadow: 0 0 10px rgba(34, 211, 238, 0.5), 0 0 20px rgba(34, 211, 238, 0.3), 0 0 30px rgba(34, 211, 238, 0.2); }
+            50% { text-shadow: 0 0 20px rgba(34, 211, 238, 0.8), 0 0 40px rgba(34, 211, 238, 0.5), 0 0 60px rgba(34, 211, 238, 0.3); }
+        }
+
+        .neon-border {
+            box-shadow: 0 0 10px rgba(34, 211, 238, 0.2);
+        }
+        .neon-btn {
+            box-shadow: 0 0 15px rgba(163, 230, 53, 0.4);
+            transition: all 0.3s ease;
+        }
+        .neon-btn:hover {
+            box-shadow: 0 0 25px rgba(163, 230, 53, 0.6), 0 0 50px rgba(163, 230, 53, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Glassmorphism */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Emoji Animation */
+        .emoji-float {
+            position: absolute;
+            opacity: 0.15;
+            animation: float 10s infinite ease-in-out;
+            z-index: 0;
+            pointer-events: none;
+            filter: drop-shadow(0 0 10px rgba(34, 211, 238, 0.5));
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg) scale(1); }
+            25% { transform: translateY(-30px) rotate(15deg) scale(1.1); }
+            50% { transform: translateY(-20px) rotate(10deg) scale(1); }
+            75% { transform: translateY(-40px) rotate(-10deg) scale(1.1); }
+            100% { transform: translateY(0) rotate(0deg) scale(1); }
+        }
+
+        .emoji-hover:hover::after {
+            content: attr(data-emoji);
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            font-size: 1.5rem;
+            animation: pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes pop {
+            0% { transform: scale(0) rotate(0deg); }
+            100% { transform: scale(1) rotate(360deg); }
+        }
+
+        /* Audio Visualizer Animation */
+        .bar {
+            width: 4px;
+            background: linear-gradient(to top, #22d3ee, #a3e635);
+            animation: sound 0s infinite linear;
+            display: inline-block;
+            margin: 0 1px;
+            border-radius: 2px;
+        }
+        .playing .bar {
+            animation-duration: 0.5s;
+        }
+        @keyframes sound {
+            0% { height: 5px; opacity: 0.5; }
+            50% { height: 25px; opacity: 1; }
+            100% { height: 5px; opacity: 0.5; }
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 2px solid rgba(34, 211, 238, 0.5);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            transform: scale(0.5) rotate(-10deg);
+            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            box-shadow: 0 0 100px rgba(34, 211, 238, 0.3), inset 0 0 50px rgba(34, 211, 238, 0.1);
+        }
+        .modal-overlay.active .modal-content {
+            transform: scale(1) rotate(0deg);
+        }
+        .modal-icon {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            animation: bounce 0.6s ease infinite;
+            filter: drop-shadow(0 0 20px rgba(34, 211, 238, 0.8));
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-20px) scale(1.1); }
+        }
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(34, 211, 238, 0.5);
+            color: #fff;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: all 0.3s ease;
+        }
+        .modal-close:hover {
+            background: rgba(34, 211, 238, 0.5);
+            transform: rotate(180deg) scale(1.2);
+            box-shadow: 0 0 30px rgba(34, 211, 238, 0.8);
+        }
+
+        /* Epic Background Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(34, 211, 238, 0.6);
+            border-radius: 50%;
+            animation: particleFloat 15s infinite linear;
+            box-shadow: 0 0 10px rgba(34, 211, 238, 0.8);
+        }
+        @keyframes particleFloat {
+            0% { transform: translateY(100vh) translateX(0) scale(0); opacity: 0; }
+            10% { opacity: 1; transform: translateY(90vh) translateX(20px) scale(1); }
+            90% { opacity: 1; }
+            100% { transform: translateY(-100vh) translateX(-20px) scale(0); opacity: 0; }
+        }
+
+        /* Scroll Animations */
+        .scroll-reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        .scroll-reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Card Hover Effects */
+        .actor-card {
+            transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        .actor-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 60px rgba(34, 211, 238, 0.3);
+            border-color: rgba(34, 211, 238, 0.8);
+        }
+        .actor-card:hover img {
+            transform: scale(1.15);
+            filter: brightness(1.2);
+        }
+
+        /* Text Glitch Effect */
+        .glitch-text {
+            position: relative;
+        }
+        .glitch-text::before,
+        .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .glitch-text::before {
+            animation: glitch1 2s infinite linear alternate-reverse;
+            color: #22d3ee;
+            z-index: -1;
+        }
+        .glitch-text::after {
+            animation: glitch2 3s infinite linear alternate-reverse;
+            color: #a3e635;
+            z-index: -2;
+        }
+        @keyframes glitch1 {
+            0% { clip-path: inset(40% 0 61% 0); transform: translate(-2px, 2px); }
+            20% { clip-path: inset(92% 0 1% 0); transform: translate(2px, -2px); }
+            40% { clip-path: inset(43% 0 1% 0); transform: translate(-2px, 2px); }
+            60% { clip-path: inset(25% 0 58% 0); transform: translate(2px, -2px); }
+            80% { clip-path: inset(54% 0 7% 0); transform: translate(-2px, 2px); }
+            100% { clip-path: inset(58% 0 43% 0); transform: translate(2px, -2px); }
+        }
+        @keyframes glitch2 {
+            0% { clip-path: inset(24% 0 29% 0); transform: translate(2px, -2px); }
+            20% { clip-path: inset(54% 0 15% 0); transform: translate(-2px, 2px); }
+            40% { clip-path: inset(12% 0 68% 0); transform: translate(2px, -2px); }
+            60% { clip-path: inset(85% 0 4% 0); transform: translate(-2px, 2px); }
+            80% { clip-path: inset(34% 0 26% 0); transform: translate(2px, -2px); }
+            100% { clip-path: inset(67% 0 13% 0); transform: translate(-2px, 2px); }
+        }
+
+        /* Animated Border */
+        .animated-border {
+            position: relative;
+            background: linear-gradient(#0f172a, #0f172a) padding-box,
+                        linear-gradient(45deg, #22d3ee, #a3e635, #22d3ee) border-box;
+            border: 2px solid transparent;
+            background-size: 200% 200%;
+            animation: borderGlow 3s ease infinite;
+        }
+        @keyframes borderGlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Wave Animation */
+        .wave-bg {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 200px;
+            background: url("image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%2322d3ee' fill-opacity='0.1' d='M0,192L48,197.3C96,203,192,213,288,229.3C384,245,480,267,576,250.7C672,235,768,181,864,181.3C960,181,1056,235,1152,234.7C1248,235,1344,181,1392,154.7L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
+            background-size: cover;
+            animation: waveMove 10s ease-in-out infinite;
+            opacity: 0.5;
+        }
+        @keyframes waveMove {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(-20px); }
+        }
+
+        /* Button Ripple Effect */
+        .ripple-btn {
+            position: relative;
+            overflow: hidden;
+        }
+        .ripple-btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        .ripple-btn:hover::after {
+            width: 300px;
+            height: 300px;
+        }
+
+        /* Floating Icons */
+        .floating-icon {
+            animation: iconFloat 3s ease-in-out infinite;
+        }
+        @keyframes iconFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(10deg); }
+        }
+
+        /* Hero Section Entry Animation */
+        .hero-enter {
+            animation: heroEnter 1.5s ease-out forwards;
+        }
+        @keyframes heroEnter {
+            0% { opacity: 0; transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .hero-text-enter {
+            opacity: 0;
+            animation: textEnter 1s ease-out forwards;
+        }
+        @keyframes textEnter {
+            0% { opacity: 0; transform: translateY(30px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+        .delay-3 { animation-delay: 0.6s; }
+        .delay-4 { animation-delay: 0.8s; }
+    </style>
+</head>
+<body class="relative">
+
+    <!-- Background Particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Background Emojis -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none">
+        <span class="emoji-float text-6xl top-10 left-10" style="animation-delay: 0s;">🎙️</span>
+        <span class="emoji-float text-4xl top-1/4 right-20" style="animation-delay: 2s;">🎧</span>
+        <span class="emoji-float text-5xl bottom-20 left-1/4" style="animation-delay: 4s;">🎬</span>
+        <span class="emoji-float text-3xl top-1/2 left-10" style="animation-delay: 1s;">✨</span>
+        <span class="emoji-float text-6xl bottom-10 right-10" style="animation-delay: 3s;">🔊</span>
+        <span class="emoji-float text-5xl top-1/3 left-1/3" style="animation-delay: 5s;">🎵</span>
+        <span class="emoji-float text-4xl bottom-1/3 right-1/4" style="animation-delay: 6s;">🎤</span>
+    </div>
+
+    <!-- Wave Background -->
+    <div class="wave-bg"></div>
+
+    <!-- Header -->
+    <header class="fixed w-full z-50 glass-panel border-b border-white/10 hero-enter">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <img src="https://raw.githubusercontent.com/Edinenir/images/33d2963f62b3f3ea211b77ae3b5e989667db3b55/photo_2026-03-23_10-32-05.jpg" alt="Logo" class="h-10 w-10 rounded-full border-2 border-cyan-400 floating-icon">
+                <span class="font-bold text-lg tracking-wider">СОЮЗ <span class="text-cyan-400 neon-text-cyan">ЗА КАДРОМ</span></span>
+            </div>
+            <nav class="hidden md:flex gap-8 text-sm font-semibold text-gray-300">
+                <a href="#dispatch" class="hover:text-cyan-400 transition relative group">
+                    Проекты
+                    <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-cyan-400 transition-all group-hover:w-full"></span>
+                </a>
+                <a href="#voices" class="hover:text-cyan-400 transition relative group">
+                    Голоса
+                    <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-cyan-400 transition-all group-hover:w-full"></span>
+                </a>
+                <a href="#services" class="hover:text-cyan-400 transition relative group">
+                    Услуги
+                    <span class="absolute -bottom-1 left-0 w-0 h-0.5 bg-cyan-400 transition-all group-hover:w-full"></span>
+                </a>
+            </nav>
+            <button class="bg-cyan-500/10 border-2 border-cyan-400 text-cyan-400 px-6 py-2 rounded-full text-sm font-bold hover:bg-cyan-400 hover:text-black transition flex items-center gap-2 ripple-btn">
+                Связаться <span class="floating-icon">➜</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="relative min-h-screen flex items-center pt-20 overflow-hidden">
+        <!-- Background Image with Overlay -->
+        <div class="absolute inset-0 z-0">
+            <img src="https://image.qwenlm.ai/public_source/08a80fab-bdc2-462d-8720-ae9381a90aa6/1badf5036-ead3-43c6-b0f1-197583e111a4.png" alt="Globe Background" class="w-full h-full object-cover opacity-40">
+            <div class="absolute inset-0 bg-gradient-to-t from-[#0f172a] via-[#0f172a]/80 to-transparent"></div>
+        </div>
+
+        <div class="container mx-auto px-6 relative z-10 grid md:grid-cols-2 gap-12 items-center">
+            <div class="space-y-6">
+                <div class="inline-block px-4 py-2 border-2 border-cyan-500/50 rounded-full bg-cyan-500/10 text-cyan-300 text-xs font-mono mb-4 animated-border hero-text-enter delay-1">
+                    #01102E • НОВЫЙ СЕЗОН 🚀
+                </div>
+                <h1 class="text-5xl md:text-7xl font-extrabold leading-tight glitch-text hero-text-enter delay-2" data-text="OFF SCREEN">
+                    OFF <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 neon-text-cyan">SCREEN</span><br>
+                    <span class="text-white">ГОЛОСА БУДУЩЕГО</span>
+                </h1>
+                <p class="text-gray-400 text-lg max-w-md hero-text-enter delay-3">
+                    Профессиональная студия озвучки. Мы создаем голоса, которые оживляют миры.
+                </p>
+                <div class="flex gap-4 pt-4 flex-wrap hero-text-enter delay-4">
+                    <button class="bg-lime-400 text-black px-8 py-4 rounded-lg font-bold neon-btn flex items-center gap-2 ripple-btn">
+                        <span class="floating-icon">▶️</span> Смотреть Dispatch
+                    </button>
+                    <button class="border-2 border-cyan-500 text-cyan-400 px-8 py-4 rounded-lg font-bold hover:bg-cyan-500/10 transition ripple-btn animated-border">
+                        Подобрать актёров
+                    </button>
+                </div>
+            </div>
+            
+            <!-- 3D Element Placeholder (Simulated with CSS/Image) -->
+            <div class="hidden md:flex justify-center relative hero-enter delay-3">
+                 <div class="w-80 h-80 rounded-full border-2 border-cyan-500/50 flex items-center justify-center animate-pulse relative">
+                    <div class="absolute w-full h-full border-2 border-dashed border-cyan-500/30 rounded-full animate-spin" style="animation-duration: 20s;"></div>
+                    <div class="absolute w-[120%] h-[120%] border-2 border-cyan-500/20 rounded-full animate-spin" style="animation-duration: 30s; animation-direction: reverse;"></div>
+                    <img src="https://raw.githubusercontent.com/Edinenir/images/33d2963f62b3f3ea211b77ae3b5e989667db3b55/photo_2026-03-23_10-07-05.jpg" class="w-64 h-64 object-cover rounded-full border-4 border-cyan-900 shadow-[0_0_80px_rgba(34,211,238,0.5)] floating-icon" alt="Banner">
+                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dispatch Section -->
+    <section id="dispatch" class="py-20 bg-slate-900 relative">
+        <div class="container mx-auto px-6">
+            <div class="flex justify-between items-end mb-10 scroll-reveal">
+                <h2 class="text-3xl font-bold flex items-center gap-2">
+                    <span class="floating-icon">🎬</span> Dispatch <span class="text-lime-400">✦</span>
+                </h2>
+                <a href="#" class="text-sm text-gray-400 hover:text-white flex items-center gap-1 transition group">
+                    Все проекты 
+                    <span class="group-hover:translate-x-2 transition-transform">→</span>
+                </a>
+            </div>
+
+            <div class="glass-panel rounded-2xl overflow-hidden border border-white/5 p-1 md:p-8 flex flex-col md:flex-row gap-8 items-center scroll-reveal actor-card">
+                <div class="w-full md:w-1/2 relative group cursor-pointer">
+                    <img src="https://raw.githubusercontent.com/Edinenir/images/33d2963f62b3f3ea211b77ae3b5e989667db3b55/975055552ce7abb4c1a82d967434850e.png" alt="Dispatch Project" class="w-full rounded-xl shadow-lg transition duration-500">
+                    <div class="absolute inset-0 bg-black/50 rounded-xl flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300">
+                        <div class="w-20 h-20 bg-lime-400 rounded-full flex items-center justify-center text-black text-3xl shadow-[0_0_40px_rgba(163,230,53,0.8)] floating-icon">
+                            ▶
+                        </div>
+                    </div>
+                </div>
+                <div class="w-full md:w-1/2 space-y-4">
+                    <h3 class="text-2xl font-bold text-white">DISPATCH <span class="text-lime-400 text-sm align-top floating-icon">★</span></h3>
+                    <p class="text-gray-400 text-sm">
+                        Официальный трейлер нового сезона. Озвучка выполнена в студии "Союз за кадром".
+                        <br><br>
+                        <span class="text-cyan-400">Режиссер:</span> Алексей Петров<br>
+                        <span class="text-cyan-400">Актеры:</span> Иван Иванов, Петр Сидоров
+                    </p>
+                    <div class="flex gap-4 pt-2 flex-wrap">
+                        <span class="px-4 py-2 bg-white/5 rounded-full text-xs text-gray-300 border border-cyan-500/30">Трейлер</span>
+                        <span class="px-4 py-2 bg-white/5 rounded-full text-xs text-gray-300 border border-cyan-500/30">Экшен</span>
+                        <span class="px-4 py-2 bg-white/5 rounded-full text-xs text-gray-300 border border-cyan-500/30">2024</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Voices Section -->
+    <section id="voices" class="py-20 relative overflow-hidden">
+        <div class="container mx-auto px-6 relative z-10">
+            <h2 class="text-3xl font-bold mb-10 text-center scroll-reveal">
+                <span class="floating-icon">🎙️</span> Голоса студии <span class="floating-icon">🎤</span>
+            </h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Actor Card 1 - Влад Савин (UPDATED) -->
+                <div class="glass-panel p-4 rounded-xl actor-card scroll-reveal">
+                    <div class="relative h-48 rounded-lg overflow-hidden mb-4 border-2 border-cyan-500/30">
+                        <img src="https://goo.su/58ivBSt" onerror="this.src='https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=300&h=300'" class="w-full h-full object-cover transition duration-500" alt="Влад Савин">
+                        <div class="absolute bottom-2 right-2 bg-black/80 px-3 py-1 rounded-full text-xs text-cyan-400 font-mono border border-cyan-500/50">
+                            00:14
+                        </div>
+                    </div>
+                    <h3 class="font-bold text-lg text-white">Влад Савин</h3>
+                    <p class="text-xs text-gray-400 mb-3">Баритон • Драма</p>
+                    <button class="w-full py-3 border-2 border-cyan-500/50 rounded-lg hover:bg-cyan-500/10 text-cyan-400 text-sm flex items-center justify-center gap-2 audio-btn ripple-btn transition-all">
+                        <div class="visualizer flex items-end h-4 gap-[2px]">
+                            <div class="bar" style="height: 4px; animation-delay: 0.1s"></div>
+                            <div class="bar" style="height: 8px; animation-delay: 0.3s"></div>
+                            <div class="bar" style="height: 6px; animation-delay: 0.2s"></div>
+                            <div class="bar" style="height: 3px; animation-delay: 0.4s"></div>
+                        </div>
+                        Слушать демо
+                    </button>
+                </div>
+
+                <!-- Actor Card 2 - Андрей Маслов -->
+                <div class="glass-panel p-4 rounded-xl actor-card scroll-reveal">
+                    <div class="relative h-48 rounded-lg overflow-hidden mb-4 border-2 border-cyan-500/30">
+                        <img src="https://fla-fi.studio/templates/khit-dark/images/maslov%202.jpg" onerror="this.src='https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=300&h=300'" class="w-full h-full object-cover transition duration-500" alt="Андрей Маслов">
+                        <div class="absolute bottom-2 right-2 bg-black/80 px-3 py-1 rounded-full text-xs text-cyan-400 font-mono border border-cyan-500/50">
+                            00:18
+                        </div>
+                    </div>
+                    <h3 class="font-bold text-lg text-white">Андрей Маслов</h3>
+                    <p class="text-xs text-gray-400 mb-3">Тенор • Реклама</p>
+                    <button class="w-full py-3 border-2 border-cyan-500/50 rounded-lg hover:bg-cyan-500/10 text-cyan-400 text-sm flex items-center justify-center gap-2 audio-btn ripple-btn transition-all">
+                         <div class="visualizer flex items-end h-4 gap-[2px]">
+                            <div class="bar" style="height: 5px; animation-delay: 0.2s"></div>
+                            <div class="bar" style="height: 3px; animation-delay: 0.1s"></div>
+                            <div class="bar" style="height: 7px; animation-delay: 0.3s"></div>
+                            <div class="bar" style="height: 4px; animation-delay: 0.4s"></div>
+                        </div>
+                        Слушать демо
+                    </button>
+                </div>
+
+                <!-- Actor Card 3 - Александр Уральский -->
+                <div class="glass-panel p-4 rounded-xl actor-card scroll-reveal">
+                    <div class="relative h-48 rounded-lg overflow-hidden mb-4 border-2 border-cyan-500/30">
+                        <img src="https://prof.actor/upload/photo/actors/m/k/k/6876584964df37HD1xB.webp" onerror="this.src='https://images.unsplash.com/photo-1531384441138-2736e62e0919?auto=format&fit=crop&q=80&w=300&h=300'" class="w-full h-full object-cover transition duration-500" alt="Александр Уральский">
+                        <div class="absolute bottom-2 right-2 bg-black/80 px-3 py-1 rounded-full text-xs text-cyan-400 font-mono border border-cyan-500/50">
+                            00:22
+                        </div>
+                    </div>
+                    <h3 class="font-bold text-lg text-white">Александр Уральский</h3>
+                    <p class="text-xs text-gray-400 mb-3">Бас • Дубляж</p>
+                    <button class="w-full py-3 border-2 border-cyan-500/50 rounded-lg hover:bg-cyan-500/10 text-cyan-400 text-sm flex items-center justify-center gap-2 audio-btn ripple-btn transition-all">
+                         <div class="visualizer flex items-end h-4 gap-[2px]">
+                            <div class="bar" style="height: 3px; animation-delay: 0.3s"></div>
+                            <div class="bar" style="height: 6px; animation-delay: 0.1s"></div>
+                            <div class="bar" style="height: 4px; animation-delay: 0.4s"></div>
+                            <div class="bar" style="height: 8px; animation-delay: 0.2s"></div>
+                        </div>
+                        Слушать демо
+                    </button>
+                </div>
+                 <!-- Actor Card 4 - Mangirov Voice (UPDATED) -->
+                 <div class="glass-panel p-4 rounded-xl actor-card scroll-reveal">
+                    <div class="relative h-48 rounded-lg overflow-hidden mb-4 border-2 border-cyan-500/30">
+                        <img src="https://img.kupigolos.ru/voice/62665a8b995bd.jpg?p=bv&s=bde89fb219b3cddfa82d61677efd4570" onerror="this.src='https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=300&h=300'" class="w-full h-full object-cover transition duration-500" alt="Mangirov Voice">
+                        <div class="absolute bottom-2 right-2 bg-black/80 px-3 py-1 rounded-full text-xs text-cyan-400 font-mono border border-cyan-500/50">
+                            00:16
+                        </div>
+                    </div>
+                    <h3 class="font-bold text-lg text-white">Mangirov Voice</h3>
+                    <p class="text-xs text-gray-400 mb-3">Баритон • Игры</p>
+                    <button class="w-full py-3 border-2 border-cyan-500/50 rounded-lg hover:bg-cyan-500/10 text-cyan-400 text-sm flex items-center justify-center gap-2 audio-btn ripple-btn transition-all">
+                         <div class="visualizer flex items-end h-4 gap-[2px]">
+                            <div class="bar" style="height: 6px; animation-delay: 0.1s"></div>
+                            <div class="bar" style="height: 4px; animation-delay: 0.3s"></div>
+                            <div class="bar" style="height: 8px; animation-delay: 0.2s"></div>
+                            <div class="bar" style="height: 3px; animation-delay: 0.4s"></div>
+                        </div>
+                        Слушать демо
+                    </button>
+                </div>
+                 <!-- Actor Card 5 -->
+                 <div class="glass-panel p-4 rounded-xl actor-card scroll-reveal">
+                    <div class="relative h-48 rounded-lg overflow-hidden mb-4 border-2 border-cyan-500/30">
+                        <img src="https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?auto=format&fit=crop&q=80&w=300&h=300" class="w-full h-full object-cover transition duration-500" alt="Actor">
+                        <div class="absolute bottom-2 right-2 bg-black/80 px-3 py-1 rounded-full text-xs text-cyan-400 font-mono border border-cyan-500/50">
+                            00:20
+                        </div>
+                    </div>
+                    <h3 class="font-bold text-lg text-white">Андрей Зорин</h3>
+                    <p class="text-xs text-gray-400 mb-3">Тенор • Анимация</p>
+                    <button class="w-full py-3 border-2 border-cyan-500/50 rounded-lg hover:bg-cyan-500/10 text-cyan-400 text-sm flex items-center justify-center gap-2 audio-btn ripple-btn transition-all">
+                         <div class="visualizer flex items-end h-4 gap-[2px]">
+                            <div class="bar" style="height: 4px; animation-delay: 0.2s"></div>
+                            <div class="bar" style="height: 7px; animation-delay: 0.4s"></div>
+                            <div class="bar" style="height: 3px; animation-delay: 0.1s"></div>
+                            <div class="bar" style="height: 5px; animation-delay: 0.3s"></div>
+                        </div>
+                        Слушать демо
+                    </button>
+                </div>
+                 <!-- Actor Card 6 -->
+                 <div class="glass-panel p-4 rounded-xl actor-card scroll-reveal">
+                    <div class="relative h-48 rounded-lg overflow-hidden mb-4 border-2 border-cyan-500/30">
+                        <img src="https://images.unsplash.com/photo-1504257432389-52343af06ae3?auto=format&fit=crop&q=80&w=300&h=300" class="w-full h-full object-cover transition duration-500" alt="Actor">
+                        <div class="absolute bottom-2 right-2 bg-black/80 px-3 py-1 rounded-full text-xs text-cyan-400 font-mono border border-cyan-500/50">
+                            00:25
+                        </div>
+                    </div>
+                    <h3 class="font-bold text-lg text-white">Павел Крот</h3>
+                    <p class="text-xs text-gray-400 mb-3">Бас • Документалистика</p>
+                    <button class="w-full py-3 border-2 border-cyan-500/50 rounded-lg hover:bg-cyan-500/10 text-cyan-400 text-sm flex items-center justify-center gap-2 audio-btn ripple-btn transition-all">
+                         <div class="visualizer flex items-end h-4 gap-[2px]">
+                            <div class="bar" style="height: 5px; animation-delay: 0.3s"></div>
+                            <div class="bar" style="height: 3px; animation-delay: 0.1s"></div>
+                            <div class="bar" style="height: 6px; animation-delay: 0.4s"></div>
+                            <div class="bar" style="height: 4px; animation-delay: 0.2s"></div>
+                        </div>
+                        Слушать демо
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects & Services Grid -->
+    <section class="py-20 bg-slate-900">
+        <div class="container mx-auto px-6 grid md:grid-cols-2 gap-12">
+            
+            <!-- Projects Column -->
+            <div>
+                <h2 class="text-3xl font-bold mb-8 scroll-reveal">
+                    <span class="floating-icon">🎬</span> Наши проекты
+                </h2>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="glass-panel p-4 rounded-xl hover:bg-white/5 transition cursor-pointer scroll-reveal actor-card">
+                        <div class="h-32 bg-gray-800 rounded-lg mb-3 overflow-hidden border-2 border-cyan-500/30">
+                             <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?auto=format&fit=crop&q=80&w=300" class="w-full h-full object-cover opacity-70 hover:opacity-100 transition">
+                        </div>
+                        <h4 class="font-bold text-sm text-white">Киберпанк 2077</h4>
+                        <p class="text-xs text-gray-500 mt-1">Локализация</p>
+                    </div>
+                    <div class="glass-panel p-4 rounded-xl hover:bg-white/5 transition cursor-pointer scroll-reveal actor-card">
+                        <div class="h-32 bg-gray-800 rounded-lg mb-3 overflow-hidden border-2 border-cyan-500/30">
+                             <img src="https://images.unsplash.com/photo-1626814026160-2237a95fc5a0?auto=format&fit=crop&q=80&w=300" class="w-full h-full object-cover opacity-70 hover:opacity-100 transition">
+                        </div>
+                        <h4 class="font-bold text-sm text-white">Звездные войны</h4>
+                        <p class="text-xs text-gray-500 mt-1">Дубляж</p>
+                    </div>
+                    <div class="glass-panel p-4 rounded-xl hover:bg-white/5 transition cursor-pointer scroll-reveal actor-card">
+                        <div class="h-32 bg-gray-800 rounded-lg mb-3 overflow-hidden border-2 border-cyan-500/30">
+                             <img src="https://images.unsplash.com/photo-1598899134739-24c46f58b8c0?auto=format&fit=crop&q=80&w=300" class="w-full h-full object-cover opacity-70 hover:opacity-100 transition">
+                        </div>
+                        <h4 class="font-bold text-sm text-white">Мстители</h4>
+                        <p class="text-xs text-gray-500 mt-1">Закадровый</p>
+                    </div>
+                    <div class="glass-panel p-4 rounded-xl hover:bg-white/5 transition cursor-pointer scroll-reveal actor-card">
+                        <div class="h-32 bg-gray-800 rounded-lg mb-3 overflow-hidden border-2 border-cyan-500/30">
+                             <img src="https://images.unsplash.com/photo-1574375927938-d5a98e8efe30?auto=format&fit=crop&q=80&w=300" class="w-full h-full object-cover opacity-70 hover:opacity-100 transition">
+                        </div>
+                        <h4 class="font-bold text-sm text-white">Ведьмак</h4>
+                        <p class="text-xs text-gray-500 mt-1">Озвучка</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Services Column -->
+            <div id="services">
+                <h2 class="text-3xl font-bold mb-8 scroll-reveal">
+                    <span class="floating-icon">🛠️</span> Услуги
+                </h2>
+                <div class="glass-panel p-6 rounded-2xl border-2 border-cyan-500/30 relative overflow-hidden scroll-reveal actor-card">
+                    <div class="absolute top-0 right-0 p-4 opacity-20 text-6xl floating-icon">🏙️</div>
+                    <h3 class="text-2xl font-bold mb-2 text-white">С.Петербург</h3>
+                    <p class="text-gray-400 text-sm mb-6">Полный цикл производства звука в северной столице.</p>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between p-3 bg-white/5 rounded-lg border border-cyan-500/20 hover:border-cyan-500/50 transition">
+                            <span class="flex items-center gap-2"><span class="text-cyan-400 floating-icon">🌐</span> Локализация игр</span>
+                            <span class="text-xs text-cyan-400">от 5000₽</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-white/5 rounded-lg border border-cyan-500/20 hover:border-cyan-500/50 transition">
+                            <span class="flex items-center gap-2"><span class="text-cyan-400 floating-icon">👥</span> Подбор актеров</span>
+                            <span class="text-xs text-lime-400">Бесплатно</span>
+                        </div>
+                        <div class="flex items-center justify-between p-3 bg-white/5 rounded-lg border border-cyan-500/20 hover:border-cyan-500/50 transition">
+                            <span class="flex items-center gap-2"><span class="text-cyan-400 floating-icon">🎚️</span> Сведение и мастеринг</span>
+                            <span class="text-xs text-cyan-400">от 3000₽</span>
+                        </div>
+                    </div>
+
+                    <button class="w-full mt-6 bg-cyan-500 hover:bg-cyan-400 text-black font-bold py-3 rounded-lg transition ripple-btn">
+                        Заказать расчет 🚀
+                    </button>
+                </div>
+
+                <!-- Contact Form Mini -->
+                <div class="mt-8 glass-panel p-6 rounded-2xl scroll-reveal actor-card">
+                    <h3 class="text-xl font-bold mb-4 text-white">
+                        <span class="floating-icon">📝</span> Оставить заявку
+                    </h3>
+                    <form id="contactForm" class="space-y-3">
+                        <input type="text" id="name" placeholder="Ваше имя" required class="w-full bg-black/30 border-2 border-gray-700 rounded-lg p-3 text-sm focus:border-cyan-400 focus:outline-none transition">
+                        <input type="text" id="contact" placeholder="Telegram / Email" required class="w-full bg-black/30 border-2 border-gray-700 rounded-lg p-3 text-sm focus:border-cyan-400 focus:outline-none transition">
+                        <textarea id="message" placeholder="Описание проекта" rows="2" required class="w-full bg-black/30 border-2 border-gray-700 rounded-lg p-3 text-sm focus:border-cyan-400 focus:outline-none transition"></textarea>
+                        <button type="submit" class="w-full bg-lime-400 hover:bg-lime-300 text-black font-bold py-3 rounded-lg transition ripple-btn">
+                            Отправить 🚀
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/10 bg-black pt-12 pb-6">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-8">
+                <div class="flex items-center gap-3 mb-4 md:mb-0">
+                    <img src="https://raw.githubusercontent.com/Edinenir/images/33d2963f62b3f3ea211b77ae3b5e989667db3b55/photo_2026-03-23_10-32-05.jpg" alt="Logo" class="h-8 w-8 rounded-full border-2 border-cyan-400 floating-icon">
+                    <span class="font-bold text-lg text-white">СОЮЗ ЗА КАДРОМ</span>
+                </div>
+                <div class="flex gap-6 text-gray-400">
+                    <a href="#" class="hover:text-cyan-400 transition hover:scale-125 transform">Instagram</a>
+                    <a href="#" class="hover:text-cyan-400 transition hover:scale-125 transform">Telegram</a>
+                    <a href="#" class="hover:text-cyan-400 transition hover:scale-125 transform">YouTube</a>
+                </div>
+            </div>
+            <div class="text-center md:text-left text-gray-600 text-xs">
+                &copy; 2024 Союз за кадром. Все права защищены. <br>
+                Дизайн вдохновлен футуризмом.
+            </div>
+        </div>
+    </footer>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal-overlay">
+        <div class="modal-content relative">
+            <button class="modal-close" onclick="closeModal()">×</button>
+            <div class="modal-icon">✅</div>
+            <h3 class="text-2xl font-bold text-white mb-2 neon-text-cyan">Заявка отправлена!</h3>
+            <p class="text-gray-400 mb-6">Спасибо за вашу заявку. Мы свяжемся с вами в ближайшее время.</p>
+            <button onclick="closeModal()" class="bg-cyan-500 hover:bg-cyan-400 text-black font-bold py-3 px-8 rounded-lg transition ripple-btn">
+                Отлично! 🎉
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Create Particles
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                container.appendChild(particle);
+            }
+        }
+        createParticles();
+
+        // Modal Functions
+        function openModal() {
+            document.getElementById('successModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('successModal').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal on overlay click
+        document.getElementById('successModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        // Form Submit Handler
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const name = document.getElementById('name').value;
+            const contact = document.getElementById('contact').value;
+            const message = document.getElementById('message').value;
+            
+            // Validate
+            if (name && contact && message) {
+                // Show success modal
+                openModal();
+                
+                // Reset form
+                this.reset();
+            }
+        });
+
+        // Scroll Reveal Animation
+        function revealOnScroll() {
+            const reveals = document.querySelectorAll('.scroll-reveal');
+            reveals.forEach(element => {
+                const windowHeight = window.innerHeight;
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+                
+                if (elementTop < windowHeight - elementVisible) {
+                    element.classList.add('active');
+                }
+            });
+        }
+        window.addEventListener('scroll', revealOnScroll);
+        revealOnScroll(); // Initial check
+
+        // Simple Audio Visualizer Simulation
+        const buttons = document.querySelectorAll('.audio-btn');
+        
+        buttons.forEach(btn => {
+            btn.addEventListener('click', function() {
+                const visualizer = this.querySelector('.visualizer');
+                const isPlaying = visualizer.parentElement.classList.contains('playing');
+                
+                // Reset all others
+                buttons.forEach(b => {
+                    b.querySelector('.visualizer').parentElement.classList.remove('playing');
+                    b.querySelector('.bar').style.animationDuration = '0s';
+                });
+
+                if (!isPlaying) {
+                    visualizer.parentElement.classList.add('playing');
+                    // Randomize animation duration for effect
+                    const bars = visualizer.querySelectorAll('.bar');
+                    bars.forEach(bar => {
+                        bar.style.animationDuration = (Math.random() * 0.5 + 0.3) + 's';
+                    });
+                    this.innerHTML = `
+                        <div class="visualizer flex items-end h-4 gap-[2px]">
+                            <div class="bar" style="height: 4px; animation-delay: 0.1s"></div>
+                            <div class="bar" style="height: 8px; animation-delay: 0.3s"></div>
+                            <div class="bar" style="height: 6px; animation-delay: 0.2s"></div>
+                            <div class="bar" style="height: 3px; animation-delay: 0.4s"></div>
+                        </div>
+                        Стоп ⏹️
+                    `;
+                } else {
+                     this.innerHTML = `
+                        <div class="visualizer flex items-end h-4 gap-[2px]">
+                            <div class="bar" style="height: 4px; animation-delay: 0.1s"></div>
+                            <div class="bar" style="height: 8px; animation-delay: 0.3s"></div>
+                            <div class="bar" style="height: 6px; animation-delay: 0.2s"></div>
+                            <div class="bar" style="height: 3px; animation-delay: 0.4s"></div>
+                        </div>
+                        Слушать демо ▶️
+                    `;
+                }
+            });
+        });
+
+        // Smooth Scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Parallax Effect on Mouse Move
+        document.addEventListener('mousemove', (e) => {
+            const emojis = document.querySelectorAll('.emoji-float');
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            emojis.forEach((emoji, index) => {
+                const speed = (index + 1) * 10;
+                emoji.style.transform = `translate(${x * speed}px, ${y * speed}px)`;
+            });
+        });
+    </script>
+</body>
+</html>
+
